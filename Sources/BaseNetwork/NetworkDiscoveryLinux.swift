@@ -1,11 +1,12 @@
 //
-//  NetworkDiscovery.swift
+//  NetworkDiscoveryLinux.swift
 //
-//  Copyright © 2019 Purgatory Design. Licensed under the MIT License.
+//  Copyright © 2019-2024 Purgatory Design. Licensed under the MIT License.
 //
 
 #if os(Linux)
 
+import BaseSwift
 import dns_sd
 import Foundation
 

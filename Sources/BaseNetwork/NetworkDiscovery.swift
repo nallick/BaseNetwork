@@ -1,7 +1,7 @@
 //
 //  NetworkDiscovery.swift
 //
-//  Copyright © 2019 Purgatory Design. Licensed under the MIT License.
+//  Copyright © 2019-2024 Purgatory Design. Licensed under the MIT License.
 //
 
 import Foundation

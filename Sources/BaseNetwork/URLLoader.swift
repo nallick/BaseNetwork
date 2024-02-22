@@ -1,8 +1,10 @@
 //
 //  URLLoader.swift
 //
-//  Copyright © 2019-2022 Purgatory Design. Licensed under the MIT License.
+//  Copyright © 2019-2024 Purgatory Design. Licensed under the MIT License.
 //
+
+#if !os(Linux)
 
 import BaseSwift
 import Foundation
@@ -601,4 +603,5 @@ extension URLLoader {
     private func subject(for task: URLSessionTask, remove: Bool = false) -> WeakSubject? { nil }
 }
 
+#endif
 #endif

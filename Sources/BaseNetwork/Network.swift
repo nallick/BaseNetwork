@@ -1,12 +1,25 @@
 //
 //  Network.swift
 //
-//  Copyright © 2019 Purgatory Design. Licensed under the MIT License.
+//  Copyright © 2019-2024 Purgatory Design. Licensed under the MIT License.
 //
 
 import Foundation
 
 public enum Network {
+
+    public static var hostName: String? {
+        #if os(Linux)
+        let maxHostNameLength = Int(HOST_NAME_MAX) + 1
+        #else
+        let maxHostNameLength = Int(_POSIX_HOST_NAME_MAX) + 1
+        #endif
+
+        var hostNameBuffer = [Int8](repeating: 0, count: maxHostNameLength)
+        let error = gethostname(&hostNameBuffer, maxHostNameLength)
+        guard error == 0 else { return nil }
+        return String(cString: hostNameBuffer)
+    }
 
     #if !os(Linux)
 
