@@ -10,6 +10,8 @@ import BaseSwift
 import dns_sd
 import Foundation
 
+public typealias NetworkDiscovery = NetworkDiscoveryLinux
+
 public final class NetworkDiscoveryLinux {
 
     public enum LocateError: Error {
@@ -48,6 +50,8 @@ public final class NetworkDiscoveryLinux {
     private var browseService: DNSService?
     private var resolveService: DNSService?
     private var publishService: DNSService?
+
+    public init() {}
 
     deinit {
         self.timeoutTimer?.invalidate()
