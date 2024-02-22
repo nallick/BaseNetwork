@@ -181,4 +181,48 @@ extension NetworkDiscovery: NetServiceBrowserDelegate {
     }
 }
 
+@available(swift 5.5)
+@available(macOS 10.15, iOS 13.0, watchOS 6.0, tvOS 13.0, visionOS 1.0, *)
+extension NetworkDiscovery {
+
+    @MainActor
+    public func locateServices(ofType type: String = "_http._tcp", inDomain domain: String = "", maximumServiceCount: Int = 0, timeout: TimeInterval = 10.0) async throws -> Set<NetService> {
+        return try await withCheckedThrowingContinuation { continuation in
+            self.locateServices(ofType: type, inDomain: domain, maximumServiceCount: maximumServiceCount, timeout: timeout) { locateResult in
+                if let error = locateResult.error {
+                    continuation.resume(throwing: error)
+                } else {
+                    continuation.resume(returning: locateResult.value ?? [])
+                }
+            }
+        }
+    }
+
+    @MainActor
+    public func resolve(service: NetService, networkFamily: Int32 = AF_INET, timeout: TimeInterval = 10.0) async throws -> ResolvedService {
+        return try await withCheckedThrowingContinuation { continuation in
+            self.resolve(service: service, networkFamily: networkFamily, timeout: timeout) { resolveResult in
+                if let value = resolveResult.value {
+                    continuation.resume(returning: value)
+                } else {
+                    continuation.resume(throwing: resolveResult.error ?? .didNotResolve([:]))
+                }
+            }
+        }
+    }
+
+    @MainActor
+    public func publishService(named name: String = "", ofType type: String, inDomain domain: String = "", port: Int32, txtRecord: [String: Data] = [:], options: NetService.Options = []) async throws -> NetService {
+        return try await withCheckedThrowingContinuation { continuation in
+            self.publishService(named: name, ofType: type, inDomain: domain, port: port, txtRecord: txtRecord, options: options) { publishResult in
+                if let value = publishResult.value {
+                    continuation.resume(returning: value)
+                } else {
+                    continuation.resume(throwing: publishResult.error ?? .didNotPublish([:]))
+                }
+            }
+        }
+    }
+}
+
 #endif

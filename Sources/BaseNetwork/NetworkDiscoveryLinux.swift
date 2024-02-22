@@ -158,4 +158,47 @@ public final class NetworkDiscoveryLinux {
     }
 }
 
+@available(swift 5.5)
+extension NetworkDiscoveryLinux {
+
+    @MainActor
+    public func locateServices(ofType type: String = "_http._tcp", inDomain domain: String = "", maximumServiceCount: Int = 0, timeout: TimeInterval = 10.0) async throws -> Set<DNSService.LocatedService> {
+        return try await withCheckedThrowingContinuation { continuation in
+            self.locateServices(ofType: type, inDomain: domain, maximumServiceCount: maximumServiceCount, timeout: timeout) { locateResult in
+                if let error = locateResult.error {
+                    continuation.resume(throwing: error)
+                } else {
+                    continuation.resume(returning: locateResult.value ?? [])
+                }
+            }
+        }
+    }
+
+    @MainActor
+    public func resolve(service: DNSService.LocatedService, networkFamily: Int32 = AF_INET, timeout: TimeInterval = 10.0) async throws -> ResolvedService {
+        return try await withCheckedThrowingContinuation { continuation in
+            self.resolve(service: service, networkFamily: networkFamily, timeout: timeout) { resolveResult in
+                if let value = resolveResult.value {
+                    continuation.resume(returning: value)
+                } else {
+                    continuation.resume(throwing: resolveResult.error ?? .didNotResolve([:]))
+                }
+            }
+        }
+    }
+
+    @MainActor
+    public func publishService(named name: String = "", ofType type: String, inDomain domain: String = "", port: Int32, txtRecord: [String: Data] = [:], options: DNSService.Flags = []) async throws -> DNSService.RegisteredService {
+        return try await withCheckedThrowingContinuation { continuation in
+            self.publishService(named: name, ofType: type, inDomain: domain, port: port, txtRecord: txtRecord, options: options) { publishResult in
+                if let value = publishResult.value {
+                    continuation.resume(returning: value)
+                } else {
+                    continuation.resume(throwing: publishResult.error ?? .didNotPublish([:]))
+                }
+            }
+        }
+    }
+}
+
 #endif
